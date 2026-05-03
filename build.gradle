@@ -115,4 +115,6 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     api "org.bytedeco:javacv-platform:$javaCvVersion"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
 }
