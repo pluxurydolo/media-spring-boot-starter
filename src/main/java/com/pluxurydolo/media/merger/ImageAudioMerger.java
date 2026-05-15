@@ -2,6 +2,7 @@ package com.pluxurydolo.media.merger;
 
 import com.pluxurydolo.media.configurer.ImageAudioMergerFrameRecorderConfigurer;
 import com.pluxurydolo.media.dto.ImageAudioMergeRequest;
+import com.pluxurydolo.media.exception.CreateFrameException;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
@@ -93,7 +94,7 @@ public class ImageAudioMerger {
         try {
             recorder.record(imageFrame);
         } catch (FFmpegFrameRecorder.Exception exception) {
-            throw new IllegalStateException(exception);
+            throw new CreateFrameException(exception);
         }
     }
 }

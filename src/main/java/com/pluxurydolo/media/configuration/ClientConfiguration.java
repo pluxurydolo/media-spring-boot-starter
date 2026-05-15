@@ -1,8 +1,10 @@
 package com.pluxurydolo.media.configuration;
 
-import com.pluxurydolo.media.client.MediaClient;
-import com.pluxurydolo.media.hls.HLSConverter;
+import com.pluxurydolo.media.client.ImageAudioMergeClient;
+import com.pluxurydolo.media.client.WatermarkClient;
 import com.pluxurydolo.media.merger.ImageAudioMerger;
+import com.pluxurydolo.media.watermark.ImageWatermarker;
+import com.pluxurydolo.media.watermark.VideoWatermarker;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +14,13 @@ public class ClientConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public MediaClient mediaClient(ImageAudioMerger imageAudioMerger, HLSConverter hlsConverter) {
-        return new MediaClient(imageAudioMerger, hlsConverter);
+    public ImageAudioMergeClient imageAudioMergeClient(ImageAudioMerger imageAudioMerger) {
+        return new ImageAudioMergeClient(imageAudioMerger);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public WatermarkClient watermarkClient(ImageWatermarker imageWatermarker, VideoWatermarker videoWatermarker) {
+        return new WatermarkClient(imageWatermarker, videoWatermarker);
     }
 }

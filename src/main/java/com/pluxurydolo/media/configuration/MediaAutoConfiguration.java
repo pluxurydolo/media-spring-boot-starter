@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 @Import({
     ClientConfiguration.class,
     MergerConfiguration.class,
-    HLSConfiguration.class
+    WatermarkerConfiguration.class
 })
 public class MediaAutoConfiguration {
 }
