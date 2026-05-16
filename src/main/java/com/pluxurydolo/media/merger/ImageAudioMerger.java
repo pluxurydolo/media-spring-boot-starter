@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.stream.IntStream;
 
 public class ImageAudioMerger {
@@ -27,12 +26,6 @@ public class ImageAudioMerger {
     public byte[] merge(ImageAudioMergeRequest request) throws IOException {
         byte[] imageBytes = request.image();
         byte[] audioBytes = request.audio();
-
-        Path videosPath = Paths.get("videos/");
-
-        if (Files.notExists(videosPath)) {
-            Files.createDirectories(videosPath);
-        }
 
         Path tempInputImage = Files.createTempFile("image-", ".jpg");
         Path tempInputAudio = Files.createTempFile("audio-", ".mp3");
