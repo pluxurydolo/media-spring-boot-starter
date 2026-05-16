@@ -1,7 +1,7 @@
 package com.pluxurydolo.media.merger;
 
 import com.pluxurydolo.media.configurer.ImageAudioMergerFrameRecorderConfigurer;
-import com.pluxurydolo.media.dto.ImageAudioMergeRequest;
+import com.pluxurydolo.media.dto.request.ImageAudioMergeRequest;
 import com.pluxurydolo.media.exception.CreateFrameException;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
@@ -12,13 +12,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.IntStream;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class ImageAudioMerger {
     private final ImageAudioMergerFrameRecorderConfigurer configurer;
@@ -27,10 +24,9 @@ public class ImageAudioMerger {
         this.configurer = configurer;
     }
 
-    public String merge(ImageAudioMergeRequest request) throws IOException {
-        String videoName = request.videoName();
-        InputStream imageStream = request.imageStream();
-        InputStream audioStream = request.audioStream();
+    public byte[] merge(ImageAudioMergeRequest request) throws IOException {
+        byte[] imageBytes = request.image();
+        byte[] audioBytes = request.audio();
 
         Path videosPath = Paths.get("videos/");
 
@@ -38,22 +34,23 @@ public class ImageAudioMerger {
             Files.createDirectories(videosPath);
         }
 
-        File tempImage = File.createTempFile("image-", ".jpg");
-        Path tempImagePath = tempImage.toPath();
-        Files.copy(imageStream, tempImagePath, REPLACE_EXISTING);
+        Path tempInputImage = Files.createTempFile("image-", ".jpg");
+        Path tempInputAudio = Files.createTempFile("audio-", ".mp3");
+        Path tempOutputVideo = Files.createTempFile("output-", ".mp4");
 
-        File tempAudio = File.createTempFile("audio-", ".mp3");
-        Path tempAudioPath = tempAudio.toPath();
-        Files.copy(audioStream, tempAudioPath, REPLACE_EXISTING);
+        Files.write(tempInputImage, imageBytes);
+        Files.write(tempInputAudio, audioBytes);
 
-        File outputVideo = new File(videosPath.toFile(), videoName + ".mp4");
+        File tempInputImageFile = tempInputImage.toFile();
+        File tempInputAudioFile = tempInputAudio.toFile();
+        File tempOutputVideoFile = tempOutputVideo.toFile();
 
         try (
-            FFmpegFrameGrabber audioGrabber = new FFmpegFrameGrabber(tempAudio);
-            FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(outputVideo, 0, 0);
+            FFmpegFrameGrabber audioGrabber = new FFmpegFrameGrabber(tempInputAudioFile);
+            FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(tempOutputVideoFile, 0, 0);
             Java2DFrameConverter converter = new Java2DFrameConverter()
         ) {
-            BufferedImage image = ImageIO.read(tempImage);
+            BufferedImage image = ImageIO.read(tempInputImageFile);
 
             audioGrabber.start();
 
@@ -67,10 +64,11 @@ public class ImageAudioMerger {
                 recorder.record(audioFrame);
             }
 
-            return outputVideo.getAbsolutePath();
+            return Files.readAllBytes(tempOutputVideo);
         } finally {
-            Files.deleteIfExists(tempImagePath);
-            Files.deleteIfExists(tempAudioPath);
+            Files.deleteIfExists(tempInputImage);
+            Files.deleteIfExists(tempInputAudio);
+            Files.deleteIfExists(tempOutputVideo);
         }
     }
 

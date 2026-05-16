@@ -5,20 +5,18 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import com.pluxurydolo.media.base.AbstractIntegrationTests;
-import com.pluxurydolo.media.dto.ImageAudioMergeRequest;
+import com.pluxurydolo.media.dto.request.ImageAudioMergeRequest;
+import com.pluxurydolo.media.util.BytesSaver;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.time.Duration;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class ImageAudioMergeClientIntegrationTests extends AbstractIntegrationTests {
@@ -31,24 +29,20 @@ class ImageAudioMergeClientIntegrationTests extends AbstractIntegrationTests {
     void testMergeImageAudio() throws IOException {
         List<ILoggingEvent> logs = listAppender().list;
 
-        imageAudioMergeClient.mergeImageAudio(imageAudioMergeRequest())
-            .subscribe();
+        byte[] result = imageAudioMergeClient.mergeImageAudio(imageAudioMergeRequest())
+            .block();
+        Path path = BytesSaver.saveVideo(result);
+        File file = path.toFile();
 
-        await().atMost(Duration.ofSeconds(10))
-            .untilAsserted(() -> {
-                File file = Paths.get("videos/videoName.mp4")
-                    .toFile();
+        assertThat(file)
+            .exists()
+            .hasSize(262192L);
 
-                assertThat(file)
-                    .exists()
-                    .hasSize(293417L);
+        assertThat(logs)
+            .hasSize(1);
 
-                assertThat(logs)
-                    .hasSize(1);
-
-                assertThat(logs.getFirst().getFormattedMessage())
-                    .isEqualTo("ekey [media-starter] Картинка и аудио успешно объединены");
-            });
+        assertThat(logs.getFirst().getFormattedMessage())
+            .isEqualTo("ekey [media-starter] Картинка и аудио успешно объединены");
     }
 
     private static ListAppender<ILoggingEvent> listAppender() {
@@ -59,16 +53,18 @@ class ImageAudioMergeClientIntegrationTests extends AbstractIntegrationTests {
     }
 
     private static ImageAudioMergeRequest imageAudioMergeRequest() throws IOException {
-        return new ImageAudioMergeRequest("videoName", imageStream(), audioStream());
+        return new ImageAudioMergeRequest(imageBytes(), audioBytes());
     }
 
-    private static InputStream imageStream() throws IOException {
+    private static byte[] imageBytes() throws IOException {
         return new ClassPathResource("image/image.jpg")
-            .getInputStream();
+            .getInputStream()
+            .readAllBytes();
     }
 
-    private static InputStream audioStream() throws IOException {
+    private static byte[] audioBytes() throws IOException {
         return new ClassPathResource("audio/audio.mp3")
-            .getInputStream();
+            .getInputStream()
+            .readAllBytes();
     }
 }

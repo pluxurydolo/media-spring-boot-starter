@@ -1,6 +1,6 @@
 package com.pluxurydolo.media.client;
 
-import com.pluxurydolo.media.dto.ImageAudioMergeRequest;
+import com.pluxurydolo.media.dto.request.ImageAudioMergeRequest;
 import com.pluxurydolo.media.exception.ImageAudioMergeException;
 import com.pluxurydolo.media.merger.ImageAudioMerger;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 
-import static java.io.InputStream.nullInputStream;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -29,13 +28,14 @@ class ImageAudioMergeClientTests {
 
     @Test
     void testMergeImageAudio() throws IOException {
+        byte[] bytes = {};
         when(imageAudioMerger.merge(any()))
-            .thenReturn("");
+            .thenReturn(bytes);
 
-        Mono<String> result = imageAudioMergeClient.mergeImageAudio(imageAudioMergeRequest());
+        Mono<byte[]> result = imageAudioMergeClient.mergeImageAudio(imageAudioMergeRequest());
 
         create(result)
-            .expectNext("")
+            .expectNext(bytes)
             .verifyComplete();
     }
 
@@ -44,13 +44,14 @@ class ImageAudioMergeClientTests {
         doThrow(RuntimeException.class)
             .when(imageAudioMerger).merge(any());
 
-        Mono<String> result = imageAudioMergeClient.mergeImageAudio(imageAudioMergeRequest());
+        Mono<byte[]> result = imageAudioMergeClient.mergeImageAudio(imageAudioMergeRequest());
 
         create(result)
             .verifyErrorMatches(throwable -> throwable.getClass().equals(ImageAudioMergeException.class));
     }
 
     private static ImageAudioMergeRequest imageAudioMergeRequest() {
-        return new ImageAudioMergeRequest("videoName", nullInputStream(), nullInputStream());
+        byte[] bytes = {};
+        return new ImageAudioMergeRequest(bytes, bytes);
     }
 }

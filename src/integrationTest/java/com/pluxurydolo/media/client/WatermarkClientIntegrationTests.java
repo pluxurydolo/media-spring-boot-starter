@@ -5,9 +5,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import com.pluxurydolo.media.base.AbstractIntegrationTests;
-import com.pluxurydolo.media.dto.ImageWatermarkRequest;
-import com.pluxurydolo.media.dto.VideoWatermarkRequest;
 import com.pluxurydolo.media.dto.Watermark;
+import com.pluxurydolo.media.dto.request.ImageWatermarkRequest;
+import com.pluxurydolo.media.dto.request.VideoWatermarkRequest;
 import com.pluxurydolo.media.util.BytesSaver;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +40,10 @@ class WatermarkClientIntegrationTests extends AbstractIntegrationTests {
         assertThat(file)
             .exists()
             .hasSize(2351431L);
+
         assertThat(logs)
             .hasSize(1);
+
         assertThat(logs.getFirst().getFormattedMessage())
             .isEqualTo("sjzi [media-starter] Вотермарка успешно нанесена на картинку");
     }
@@ -58,8 +60,10 @@ class WatermarkClientIntegrationTests extends AbstractIntegrationTests {
         assertThat(file)
             .exists()
             .hasSize(222889L);
+
         assertThat(logs)
             .hasSize(1);
+
         assertThat(logs.getFirst().getFormattedMessage())
             .isEqualTo("crcp [media-starter] Вотермарка успешно нанесена на видео");
     }
@@ -72,11 +76,11 @@ class WatermarkClientIntegrationTests extends AbstractIntegrationTests {
     }
 
     private static ImageWatermarkRequest imageWatermarkRequest() throws IOException {
-        return new ImageWatermarkRequest("imageName", imageBytes(), watermark());
+        return new ImageWatermarkRequest(imageBytes(), watermark());
     }
 
     private static VideoWatermarkRequest videoWatermarkRequest() throws IOException {
-        return new VideoWatermarkRequest("videoName", videoBytes(), watermark());
+        return new VideoWatermarkRequest(videoBytes(), watermark());
     }
 
     private static Watermark watermark() throws IOException {
