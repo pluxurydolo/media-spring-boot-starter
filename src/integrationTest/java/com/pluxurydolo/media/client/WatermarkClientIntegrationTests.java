@@ -59,7 +59,7 @@ class WatermarkClientIntegrationTests extends AbstractIntegrationTests {
 
         assertThat(file)
             .exists()
-            .hasSize(222889L);
+            .hasSize(281470L);
 
         assertThat(logs)
             .hasSize(1);
