@@ -38,8 +38,8 @@ public class WatermarkScaler {
     }
 
     private static int scaledHeight(RenderedImage watermark, int scaledWidth) {
-        int watermarkHeight = watermark.getHeight();
         int watermarkWidth = watermark.getWidth();
+        int watermarkHeight = watermark.getHeight();
         return watermarkHeight * scaledWidth / watermarkWidth;
     }
 }
