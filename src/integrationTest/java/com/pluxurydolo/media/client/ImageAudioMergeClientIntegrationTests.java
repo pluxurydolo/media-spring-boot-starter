@@ -36,7 +36,7 @@ class ImageAudioMergeClientIntegrationTests extends AbstractIntegrationTests {
 
         assertThat(file)
             .exists()
-            .hasSize(262192L);
+            .hasSize(293417L);
 
         assertThat(logs)
             .hasSize(1);

@@ -57,6 +57,8 @@ public class ImageAudioMerger {
                 recorder.record(audioFrame);
             }
 
+            recorder.stop();
+
             return Files.readAllBytes(tempOutputVideo);
         } finally {
             Files.deleteIfExists(tempInputImage);
