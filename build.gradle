@@ -115,6 +115,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     api "org.bytedeco:javacv-platform:$javaCvVersion"
+    api "com.microsoft.playwright:playwright:$playwrightVersion"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
 }

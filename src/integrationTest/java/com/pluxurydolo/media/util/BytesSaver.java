@@ -21,17 +21,25 @@ public class BytesSaver {
         }
     }
 
-    public static Path saveImage(byte[] imageBytes) throws IOException {
+    public static Path saveImage(byte[] imageBytes) {
         String filename = "image.jpg";
         Path filePath = IMAGE_DIRECTORY.resolve(filename);
-        Files.write(filePath, imageBytes, CREATE, TRUNCATE_EXISTING);
+        write(filePath, imageBytes);
         return filePath;
     }
 
-    public static Path saveVideo(byte[] videoBytes) throws IOException {
+    public static Path saveVideo(byte[] videoBytes) {
         String filename = "video.mp4";
         Path filePath = VIDEO_DIRECTORY.resolve(filename);
-        Files.write(filePath, videoBytes, CREATE, TRUNCATE_EXISTING);
+        write(filePath, videoBytes);
         return filePath;
+    }
+
+    private static void write(Path path, byte[] bytes) {
+        try {
+            Files.write(path, bytes, CREATE, TRUNCATE_EXISTING);
+        } catch (IOException exception) {
+            throw new IllegalStateException(exception);
+        }
     }
 }
