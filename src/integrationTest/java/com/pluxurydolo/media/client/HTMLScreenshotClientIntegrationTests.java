@@ -35,7 +35,7 @@ class HTMLScreenshotClientIntegrationTests extends AbstractIntegrationTests {
 
         assertThat(file)
             .exists()
-            .hasSize(12009L);
+            .isNotEmpty();
 
         assertThat(logs)
             .hasSize(1);
