@@ -21,8 +21,6 @@ import static java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
 
 public class WatermarkTextAdder {
     public void add(RenderedImage image, Graphics2D graphics, Watermark watermark) {
-        float opacity = 0.4F;
-
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
         String watermarkText = watermark.text();
@@ -42,6 +40,7 @@ public class WatermarkTextAdder {
         int padding = 0;
         Point positionPoint = BOTTOM.getPoint(container, element, padding);
 
+        float opacity = 0.4F;
         drawShadow(graphics, opacity, watermarkText, positionPoint);
         drawText(graphics, watermarkText, positionPoint);
     }

@@ -20,14 +20,15 @@ public class ImageAudioMergerFrameRecorderConfigurer {
         recorder.setImageWidth(imageWidth);
         recorder.setImageHeight(imageHeight);
 
+        recorder.setSampleRate(sampleRate);
+        recorder.setAudioChannels(audioChannels);
+
         recorder.setVideoCodec(AV_CODEC_ID_H264);
         recorder.setFormat("mp4");
         recorder.setFrameRate(30);
         recorder.setVideoBitrate(2_000_000);
         recorder.setPixelFormat(AV_PIX_FMT_YUV420P);
 
-        recorder.setAudioChannels(audioChannels);
-        recorder.setSampleRate(sampleRate);
         recorder.setAudioCodec(AV_CODEC_ID_AAC);
         recorder.setAudioBitrate(128_000);
 
