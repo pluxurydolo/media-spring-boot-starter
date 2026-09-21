@@ -1,10 +1,8 @@
 package com.pluxurydolo.media.configuration;
 
-import com.pluxurydolo.media.client.HTMLScreenshotClient;
 import com.pluxurydolo.media.client.ImageAudioMergeClient;
 import com.pluxurydolo.media.client.WatermarkClient;
 import com.pluxurydolo.media.merger.ImageAudioMerger;
-import com.pluxurydolo.media.screenshot.HTMLScreenshotter;
 import com.pluxurydolo.media.watermark.ImageWatermarker;
 import com.pluxurydolo.media.watermark.VideoWatermarker;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,11 +22,5 @@ public class ClientConfiguration {
     @ConditionalOnMissingBean
     public WatermarkClient watermarkClient(ImageWatermarker imageWatermarker, VideoWatermarker videoWatermarker) {
         return new WatermarkClient(imageWatermarker, videoWatermarker);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public HTMLScreenshotClient htmlScreenshotClient(HTMLScreenshotter htmlScreenshotter) {
-        return new HTMLScreenshotClient(htmlScreenshotter);
     }
 }

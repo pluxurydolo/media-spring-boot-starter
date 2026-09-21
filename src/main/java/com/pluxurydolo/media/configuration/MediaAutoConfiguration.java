@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Import;
 @AutoConfiguration
 @Import({
     ClientConfiguration.class,
-    HTMLScreenshotterConfiguration.class,
     MergerConfiguration.class,
-    PlaywrightConfiguration.class,
     WatermarkerConfiguration.class
 })
 public class MediaAutoConfiguration {
